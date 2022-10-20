@@ -32,7 +32,7 @@ namespace RestaurantAPI.Controllers
 
         }
         [HttpDelete("{id}")]
-        public ActionResult Delete([FromRoute]int id)
+        public ActionResult Delete([FromRoute] int id)
         {
             _restaurantService.Delete(id);
 
@@ -40,7 +40,7 @@ namespace RestaurantAPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateRestaurant([FromBody]CreateRestaurantDto dto)
+        public ActionResult CreateRestaurant([FromBody] CreateRestaurantDto dto)
         {
 
             var id = _restaurantService.Create(dto);
@@ -52,7 +52,7 @@ namespace RestaurantAPI.Controllers
         public ActionResult<IEnumerable<Restaurant>> GetAll()
         {
             var restaurantsDtos = _restaurantService.GetAll();
-           
+
 
             return Ok(restaurantsDtos);
         }

@@ -55,6 +55,7 @@ namespace RestaurantAPI
                 };
             });
 
+            services.AddSingleton(authenticationSettings);
             services.AddControllers().AddFluentValidation();
             services.AddDbContext<RestaurantDbContext>();
             services.AddScoped<RestaurantSeeder>();
