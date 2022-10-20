@@ -21,6 +21,8 @@ using RestaurantAPI.Models.Validators;
 using FluentValidation;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using RestaurantAPI.Authorization;
 
 namespace RestaurantAPI
 {
@@ -55,6 +57,16 @@ namespace RestaurantAPI
                 };
             });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("HasNationality", builder => builder.RequireClaim("Nationality", "German", "Polish"));
+                options.AddPolicy("AtLeast20", builder => builder.AddRequirements(new MinimumAgeRequirement(20)));
+                options.AddPolicy("CreatedAtLeast2Restaurants", builder => builder.AddRequirements(new CreatedMultipleRestaurantsRequirement(2)));
+            });
+
+            services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>();
+            services.AddScoped<IAuthorizationHandler, ResourceOperationRequirementHandler>();
+            services.AddScoped<IAuthorizationHandler, CreatedMultipleRestaurantsRequirementHandler>();
             services.AddSingleton(authenticationSettings);
             services.AddControllers().AddFluentValidation();
             services.AddDbContext<RestaurantDbContext>();
@@ -67,6 +79,9 @@ namespace RestaurantAPI
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
             services.AddScoped<RequestTimeMiddleware>();
+            services.AddScoped<IUserContextService, UserContextService>();
+            services.AddHttpContextAccessor();
+
             services.AddSwaggerGen();
         }
 
@@ -93,6 +108,7 @@ namespace RestaurantAPI
             });
 
             app.UseRouting();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
