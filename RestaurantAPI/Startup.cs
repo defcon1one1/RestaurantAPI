@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Swashbuckle.AspNetCore.Swagger;
+using Microsoft.AspNetCore.Identity;
 
 namespace RestaurantAPI
 {
@@ -37,6 +38,7 @@ namespace RestaurantAPI
             services.AddScoped<IDishService, DishService>();
             services.AddScoped<IAccountService, AccountService>();
             services.AddScoped<ErrorHandlingMiddleware>();
+            services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<RequestTimeMiddleware>();
             services.AddSwaggerGen();
         }
